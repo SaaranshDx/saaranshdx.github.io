@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Saaransh_Xd - developer, builder, internet resident.">
+  <title>Saaransh_Xd</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="./css/main.css">
+</head>
+<body>
+  <video id="background-video" class="background" autoplay muted loop playsinline>
+    <source src="./assets/background.mp4" type="video/mp4">
+  </video>
+  <audio id="background-audio" loop preload="auto">
+    <source src="./assets/background.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="overlay"></div>
+  <div class="vignette"></div>
+
+  <div id="entry-screen" class="entry-screen">
+    <button id="enter-site" class="enter-button" type="button">click to enter</button>
+  </div>
+
+  <div id="music-toast" class="music-toast" role="status" aria-live="polite">
+    playing snowfall by Øneheart
+  </div>
+
+  <main class="profile">
+    <img
+      id="avatar"
+      class="avatar"
+      src="https://cdn.discordapp.com/avatars/1189872646163284041/379c913a2163e1f060c46fe617b13746.png?size=4096"
+      alt="Saaransh_Xd"
+    >
+
+    <section class="info">
+      <h1>Saaransh_Xd <span class="flower"></span></h1>
+      <p>internet resident</p>
+      <div class="meta">
+        <span><i class="fa-solid fa-location-dot" aria-hidden="true"></i> somewhere</span>
+        <span>·</span>
+        <span>building things</span>
+      </div>
+
+      <nav id="important-links" class="links" aria-label="Important links"></nav>
+    </section>
+  </main>
+
+  <div class="corner left">a guy (trust me bro)</div>
+  <div class="corner right">after death,</div>
+  <div class="scroll-hint" aria-hidden="true">scroll</div>
+
+  <section class="below-fold" aria-label="More about Saaransh_Xd">
+    <div class="below-column blog-column">
+      <span class="section-label">blog</span>
+      <p class="construction">under construction rn</p>
+    </div>
+
+    <div class="below-column stats-column">
+      <span class="section-label">stats</span>
+      <p class="pronouns"></p>
+      <div id="panel-github" class="tab-panel"></div>
+
+      <div class="rpc-section">
+        <div id="panel-activity" class="tab-panel"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="controls">
+    <button id="sound-toggle" class="sound-toggle" type="button"
+      aria-label="Enable background sound" aria-pressed="false" title="Toggle sound">
+      <i class="fa-solid fa-volume-xmark" aria-hidden="true"></i>
+    </button>
+    <button id="more-links-toggle" class="more-links-toggle" type="button"
+      aria-expanded="false" title="All links">
+      <i class="fa-solid fa-link" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <div id="links-modal" class="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal></div>
+
+    <section class="modal-content" role="dialog" aria-modal="true" aria-labelledby="links-title">
+      <div class="modal-header">
+        <div>
+          <span class="modal-kicker">all platforms</span>
+          <h2 id="links-title">all links</h2>
+        </div>
+        <button id="close-links" class="modal-close" type="button" aria-label="Close links">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div id="all-links" class="all-links"></div>
+    </section>
+  </div>
+
+  <script src="./js/main.js"></script>
+</body>
+</html>
