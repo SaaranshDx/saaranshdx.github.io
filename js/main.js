@@ -137,7 +137,7 @@ const projects = [
     live: "https://clipbin.github.io"
   },
   {
-    name: "ghostdrop",
+    name: "ghostdrop (archived)",
     description: "File sharing that actually works",
     language: "Javascript",
     languageColor: "#f1e05a",
