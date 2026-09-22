@@ -237,6 +237,95 @@ h1 {
   font-size: 18px;
 }
 
+.projects-list {
+  border-top: 1px solid rgba(255,255,255,.1);
+}
+
+.project-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 17px 0 16px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
+.project-main {
+  min-width: 0;
+}
+
+.project-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+}
+
+.project-heading h3 {
+  margin: 0;
+  color: #2f86ff;
+  font: 600 16px/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.project-status {
+  color: rgba(255,255,255,.3);
+  font: 9px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.project-status.is-completed {
+  color: rgba(255,255,255,.5);
+}
+
+.project-main p {
+  max-width: 520px;
+  margin: 8px 0 0;
+  color: rgba(255,255,255,.58);
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.project-meta {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 12px;
+  padding-top: 1px;
+  color: rgba(255,255,255,.52);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.project-language {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.project-language i {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--language-color);
+}
+
+.project-links {
+  display: inline-flex;
+  gap: 8px;
+  padding-left: 1px;
+}
+
+.project-links a {
+  color: rgba(255,255,255,.48);
+  text-decoration: none;
+  transition: color .18s ease, transform .18s ease;
+}
+
+.project-links a:hover {
+  color: #fff;
+  transform: translateY(-1px);
+}
+
 .pronouns {
   margin-bottom: 22px;
   color: rgba(255,255,255,.4);
@@ -534,6 +623,14 @@ h1 {
   .profile {
     width: calc(100vw - 42px);
     gap: 14px;
+  }
+
+  .project-row {
+    display: block;
+  }
+
+  .project-meta {
+    margin-top: 10px;
   }
 
   .avatar {

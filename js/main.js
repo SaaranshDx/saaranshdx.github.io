@@ -1,8 +1,8 @@
 const links = {
-  custom: {
-    name: "Custom URL",
-    url: "https://mizucode.qzz.io",
-    icon: "fa-solid fa-globe"
+  email: {
+    name: "Email",
+    url: "mailto:sillycat@mizucode.qzz.io",
+    icon: "fa-solid fa-mail"
   },
   github: {
     name: "GitHub",
@@ -106,10 +106,95 @@ const links = {
   }
 };
 
-const important = ["github", "discord", "instagram", "youtube"];
+const important = ["github", "discord", "instagram", "youtube", "email"];
+
+const projects = [
+  {
+    name: "Loop",
+    description: "The best music player known to man kind",
+    language: "Javascript",
+    languageColor: "#f1e05a",
+    isCompleted: true,
+    github: "https://github.com/loop-mp3/loop",
+    live: "https://loop.mizucode.qzz.io"
+  },
+  {
+    name: "Clipbin",
+    description: "Share text like never before",
+    language: "Python",
+    languageColor: "#3572A5",
+    isCompleted: true,
+    github: "https://github.com/SaaranshDx/clipbin",
+    live: "https://clipbin.github.io"
+  },
+  {
+    name: "ghostdrop",
+    description: "File sharing that actually works",
+    language: "Javascript",
+    languageColor: "#f1e05a",
+    isCompleted: true,
+    github: "https://github.com/SaaranshDx/ghostdrop",
+    live: "https://ghostdrop.qzz.io"
+  },
+  {
+    name: "larpfetch",
+    description: "The endgame of fetch programs",
+    language: "C++",
+    languageColor: "#F34B7D",
+    isCompleted: true,
+    github: "https://github.com/SaaranshDx/larpfetch",
+    live: ""
+  },
+  {
+    name: "wisp",
+    description: "Auth that dosent suck",
+    language: "JavaScript",
+    languageColor: "#f1e05a",
+    isCompleted: false,
+    github: "https://github.com/SaaranshDx/wisp",
+    live: ""
+  },
+  {
+    name: "bean",
+    description: "A restapi which exposes discord rpc data of users",
+    language: "Javascript",
+    languageColor: "#f1e05a",
+    isCompleted: true,
+    github: "https://github.com/SaaranshDx/bean",
+    live: ""
+  },
+  {
+    name: "hex (archived)",
+    description: "A community driven minecraft cosmetics projetc",
+    language: "Kotlin",
+    languageColor: "#A97BFF",
+    isCompleted: true,
+    github: "https://github.com/SaaranshDx/hex",
+    live: ""
+  },
+  {
+    name: "discord bridge",
+    description: "A bridge to connect minecraft chat with discord using web hooks",
+    language: "Javascript",
+    languageColor: "#B07219",
+    isCompleted: true,
+    github: "https://github.com/SaaranshDx/discord-bridge",
+    live: "https://modrinth.com/plugin/discord-bridge-mc"
+  },  
+  {
+    name: "peek",
+    description: "Blinders to peek through for browsers!",
+    language: "Javascript",
+    languageColor: "#f1e05a",
+    isCompleted: true,
+    github: "https://github.com/SaaranshDx/peek",
+    live: ""
+  }  
+];
 
 const importantLinks = document.getElementById("important-links");
 const allLinks = document.getElementById("all-links");
+const projectsList = document.getElementById("projects-list");
 const modal = document.getElementById("links-modal");
 const moreLinksToggle = document.getElementById("more-links-toggle");
 const closeLinks = document.getElementById("close-links");
@@ -167,11 +252,42 @@ function createLink(link, className = "") {
   return anchor;
 }
 
+function renderProjects() {
+  projectsList.innerHTML = projects.map((project) => {
+    const projectLinks = [
+      project.github ? `<a href="${escapeHtml(project.github)}" target="_blank" rel="noopener noreferrer" aria-label="${escapeHtml(project.name)} on GitHub"><i class="fa-brands fa-github" aria-hidden="true"></i></a>` : "",
+      project.live ? `<a href="${escapeHtml(project.live)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${escapeHtml(project.name)} live"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>` : ""
+    ].join("");
+    const status = project.isCompleted ? "completed" : "in progress";
+    const language = project.language
+      ? `<span class="project-language"><i style="--language-color: ${escapeHtml(project.languageColor)}"></i>${escapeHtml(project.language)}</span>`
+      : "";
+
+    return `
+      <article class="project-row">
+        <div class="project-main">
+          <div class="project-heading">
+            <h3>${escapeHtml(project.name)}</h3>
+            <span class="project-status ${project.isCompleted ? "is-completed" : ""}">${status}</span>
+          </div>
+          ${project.description ? `<p>${escapeHtml(project.description)}</p>` : ""}
+        </div>
+        <div class="project-meta">
+          ${language}
+          ${projectLinks ? `<span class="project-links">${projectLinks}</span>` : ""}
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
 important.forEach((key) => {
   if (links[key]) {
     importantLinks.appendChild(createLink(links[key]));
   }
 });
+
+renderProjects();
 
 Object.entries(links).forEach(([key, link]) => {
   const card = document.createElement("a");
