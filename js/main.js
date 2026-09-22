@@ -175,7 +175,7 @@ const projects = [
   {
     name: "discord bridge",
     description: "A bridge to connect minecraft chat with discord using web hooks",
-    language: "Javascript",
+    language: "Java",
     languageColor: "#B07219",
     isCompleted: true,
     github: "https://github.com/SaaranshDx/discord-bridge",
