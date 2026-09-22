@@ -405,8 +405,13 @@ function escapeHtml(value) {
 }
 
 function isListening(activity) {
-  const name = (activity.application?.name || "").toLowerCase();
-  return LISTENING_KEYWORDS.some((keyword) => name.includes(keyword));
+  if (activity.type === 2) return true;
+  const searchable = [
+    activity.application?.name,
+    activity.details,
+    activity.state
+  ].filter(Boolean).join(" ").toLowerCase();
+  return LISTENING_KEYWORDS.some((keyword) => searchable.includes(keyword));
 }
 
 function msToHuman(ms) {
@@ -464,24 +469,16 @@ function activityAssetUrl(activity, assetKey) {
     : "";
 }
 
-function activityButtonUrl(activity, button) {
-  return button?.url && /^https?:\/\//i.test(button.url) ? button.url : "";
-}
-
-
-function renderActivityCard(activity) {
+function renderActivityCard(activity, showButton = false) {
   const name = activity.application?.name || "Unknown";
   const details = activity.details || "";
   const state = activity.state || "";
   const time = activityTime(activity.timestamps);
   const largeImage = activityAssetUrl(activity, activity.assets?.large_image);
   const smallImage = activityAssetUrl(activity, activity.assets?.small_image);
-  const buttons = (activity.buttons || [])
-    .filter((button) => button.label)
-    .map((button) => activityButtonUrl(activity, button)
-      ? `<a class="activity-button" href="${escapeHtml(activityButtonUrl(activity, button))}" target="_blank" rel="noopener noreferrer">${escapeHtml(button.label)}</a>`
-      : `<button class="activity-button" type="button" disabled>${escapeHtml(button.label)}</button>`)
-    .join("");
+  const buttons = showButton
+    ? `<a class="activity-button" href="https://loop.mizucode.qzz.io" target="_blank" rel="noopener noreferrer">Get loop</a>`
+    : "";
   const lines = [details, state]
     .filter(Boolean)
     .map((line) => `<p>${escapeHtml(line)}</p>`)
@@ -527,12 +524,12 @@ async function loadActivity(showLoading = true) {
     activityPanel.innerHTML =
       renderGroup(
         "playing",
-        playing.map((a) => renderActivityCard(a)),
+        playing.map((a) => renderActivityCard(a, false)),
         "nothing"
       ) +
       renderGroup(
         "listening",
-        listening.map((a) => renderActivityCard(a)),
+        listening.map((a) => renderActivityCard(a, true)),
         "nothing"
       );
   } catch {
