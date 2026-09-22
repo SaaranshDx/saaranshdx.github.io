@@ -1,0 +1,60 @@
+{
+  "important": [
+    "ghostdrop",
+    "clipbin",
+    "loop",
+    "larpfetch"
+  ],
+  "projects": {
+    "ghostdrop": {
+      "name": "GhostDrop",
+      "url": "https://ghostdrop.qzz.io",
+      "isCompleted": true
+    },
+    "360": {
+      "name": "360",
+      "url": "https://github.com/SaaranshDx/360",
+      "isCompleted": false
+    },
+    "wisp": {
+      "name": "Wisp",
+      "url": "https://wispproject.netlify.app",
+      "isCompleted": false
+    },
+    "discordbridge": {
+      "name": "DiscordBridge",
+      "url": "https://modrinth.com/plugin/discord-bridge-mc",
+      "isCompleted": true
+    },
+    "bean": {
+      "name": "Bean",
+      "url": "https://github.com/SaaranshDx/bean",
+      "isCompleted": true
+    },
+    "peek": {
+      "name": "Peek",
+      "url": "https://github.com/SaaranshDx/peek",
+      "isCompleted": true
+    },
+    "blink": {
+      "name": "Blink",
+      "url": "https://github.com/SaaranshDx/blink",
+      "isCompleted": false
+    },
+    "clipbin": {
+      "name": "Clipbin",
+      "url": "https://github.com/SaaranshDx/clipbin",
+      "isCompleted": true
+    },
+    "larpfetch": {
+      "name": "larpfetch",
+      "url": "https://github.com/SaaranshDx/larpfetch",
+      "isCompleted": true
+    },
+    "loop": {
+      "name": "Loop",
+      "url": "https://loop.mizucode.qzz.io",
+      "isCompleted": true
+    }
+  }
+}
