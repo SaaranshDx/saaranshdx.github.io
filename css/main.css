@@ -219,7 +219,6 @@ h1 {
   width: 16px;
   height: 16px;
   color: currentColor;
-  filter: brightness(0) invert(1);
   object-fit: contain;
 }
 

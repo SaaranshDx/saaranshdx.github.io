@@ -27,12 +27,17 @@ const links = {
   namemc: {
     name: "NameMC",
     url: "https://namemc.com/Saaransh_Xd",
-    iconHtml: '<img class="custom-link-icon" src="https://s.namemc.com/img/favicon.svg" alt="">'
+    iconHtml: '<svg class="custom-link-icon" role="img" viewBox="-8 -8 16 16" xmlns="http://www.w3.org/2000/svg" aria-label="NameMC" shape-rendering="crispEdges"><rect fill="black" x="-8" y="-8" width="16" height="16"></rect><path fill="white" d="M-5-5L+3-5L+3-3L+5-3L+5+5L+3+5L+3-3L-3-3L-3+5L-5+5"></path></svg>'
+  },
+  modrinth: {
+    name: "Modrinth",
+    url: "https://modrinth.com/user/Saaransh_Xd",
+    customIcon: "modrinth"
   },
   roblox: {
     name: "Roblox",
     url: "https://roblox.com/users/Saaransh_Xd",
-    icon: "fa-solid fa-cube"
+    iconHtml: '<svg class="custom-link-icon" role="img" viewBox="0 0 640 640" xmlns="http://www.w3.org/2000/svg" aria-label="Roblox"><path fill="currentColor" d="M362.3 393.5L381 323.7L530.9 363.9L472 583.5L56 472L96.2 322.2L362.3 393.5zM583.5 167.5L543.3 317.3L277.2 246L258.5 315.8L108.6 275.7L167.5 56L583.5 167.5z"></path></svg>'
   },
   pinterest: {
     name: "Pinterest",
@@ -260,8 +265,16 @@ function createLink(link, className = "") {
   anchor.rel = "noopener noreferrer";
   anchor.className = className;
   anchor.setAttribute("aria-label", link.name);
-  anchor.innerHTML = link.iconHtml || `<i class="${link.icon}" aria-hidden="true"></i>`;
+  anchor.innerHTML = getLinkIcon(link);
   return anchor;
+}
+
+function getLinkIcon(link) {
+  if (link.customIcon === "modrinth") {
+    return modrinthIcon;
+  }
+
+  return link.iconHtml || `<i class="${link.icon}" aria-hidden="true"></i>`;
 }
 
 function renderProjects() {
@@ -308,7 +321,7 @@ Object.entries(links).forEach(([key, link]) => {
   card.rel = "noopener noreferrer";
   card.className = "link-card";
   card.setAttribute("aria-label", link.name);
-  card.innerHTML = link.iconHtml || `<i class="${link.icon}" aria-hidden="true"></i>`;
+  card.innerHTML = getLinkIcon(link);
   allLinks.appendChild(card);
 });
 
