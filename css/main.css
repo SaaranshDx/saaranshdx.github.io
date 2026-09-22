@@ -625,6 +625,16 @@ h1 {
   transform: translateY(-1px);
 }
 
+.site-footer {
+  position: relative;
+  z-index: 1;
+  padding: 0 24px 28px;
+  color: rgba(255,255,255,.32);
+  text-align: center;
+  font: 10px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: .04em;
+}
+
 .external-warning {
   position: fixed;
   inset: 0;

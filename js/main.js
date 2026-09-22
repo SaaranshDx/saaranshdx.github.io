@@ -210,7 +210,10 @@ const externalWarning = document.getElementById("external-warning");
 const externalWarningUrl = document.getElementById("external-warning-url");
 const cancelExternalWarning = document.getElementById("cancel-external-warning");
 const continueExternalWarning = document.getElementById("continue-external-warning");
+const currentYear = document.getElementById("current-year");
 let pendingExternalUrl = "";
+
+currentYear.textContent = String(new Date().getFullYear());
 
 document.body.classList.add("site-locked");
 document.documentElement.classList.add("site-locked");
