@@ -429,17 +429,8 @@ function activityAssetUrl(activity, assetKey) {
 }
 
 function activityButtonUrl(activity, button) {
-  if (button.url && /^https?:\/\//i.test(button.url)) return button.url;
-  const applicationId = activity.application?.id;
-  /*
-  return applicationId
-    ? `https://discord.com/application-directory/${applicationId}`
-    : "";
-  */
-  return applicationId
-    ? `https://loop.mizucode.qzz.io`  
-    : "";
-  }
+  return button?.url && /^https?:\/\//i.test(button.url) ? button.url : "";
+}
 
 
 function renderActivityCard(activity) {
