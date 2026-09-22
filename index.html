@@ -6,7 +6,7 @@
   <meta name="description" content="Saaransh_Xd - developer, builder, internet resident.">
   <title>Saaransh_Xd</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="./css/main.css?v=2">
 </head>
 <body>
   <video id="background-video" class="background" autoplay muted loop playsinline>
@@ -95,6 +95,20 @@
       </div>
 
       <div id="all-links" class="all-links"></div>
+    </section>
+  </div>
+
+  <div id="external-warning" class="external-warning" aria-hidden="true">
+    <div class="external-warning-backdrop" data-close-external-warning></div>
+    <section class="external-warning-content" role="dialog" aria-modal="true" aria-labelledby="external-warning-title">
+      <span class="modal-kicker">external link</span>
+      <h2 id="external-warning-title">you are leaving this site</h2>
+      <p>This link will open an external website:</p>
+      <div id="external-warning-url" class="external-warning-url"></div>
+      <div class="external-warning-actions">
+        <button id="cancel-external-warning" class="external-warning-button" type="button">cancel</button>
+        <button id="continue-external-warning" class="external-warning-button is-primary" type="button">continue</button>
+      </div>
     </section>
   </div>
 

@@ -206,6 +206,11 @@ const heroFadeElements = document.querySelectorAll(".corner, .scroll-hint");
 const entryScreen = document.getElementById("entry-screen");
 const enterSite = document.getElementById("enter-site");
 const musicToast = document.getElementById("music-toast");
+const externalWarning = document.getElementById("external-warning");
+const externalWarningUrl = document.getElementById("external-warning-url");
+const cancelExternalWarning = document.getElementById("cancel-external-warning");
+const continueExternalWarning = document.getElementById("continue-external-warning");
+let pendingExternalUrl = "";
 
 document.body.classList.add("site-locked");
 document.documentElement.classList.add("site-locked");
@@ -326,6 +331,37 @@ document.addEventListener("keydown", (event) => {
   if (modal.classList.contains("is-open")) {
     closeModal();
   }
+  if (externalWarning.classList.contains("is-open")) {
+    closeExternalWarning();
+  }
+});
+
+function closeExternalWarning() {
+  externalWarning.classList.remove("is-open");
+  externalWarning.setAttribute("aria-hidden", "true");
+  pendingExternalUrl = "";
+}
+
+function openExternalWarning(url) {
+  pendingExternalUrl = url;
+  externalWarningUrl.textContent = url;
+  externalWarning.classList.add("is-open");
+  externalWarning.setAttribute("aria-hidden", "false");
+  cancelExternalWarning.focus();
+}
+
+document.addEventListener("click", (event) => {
+  const anchor = event.target.closest("a[href]");
+  if (!anchor || !/^https?:$/i.test(anchor.protocol)) return;
+  event.preventDefault();
+  openExternalWarning(anchor.href);
+});
+
+document.querySelector("[data-close-external-warning]").addEventListener("click", closeExternalWarning);
+cancelExternalWarning.addEventListener("click", closeExternalWarning);
+continueExternalWarning.addEventListener("click", () => {
+  if (pendingExternalUrl) window.open(pendingExternalUrl, "_blank", "noopener,noreferrer");
+  closeExternalWarning();
 });
 
 soundToggle.addEventListener("click", async () => {
