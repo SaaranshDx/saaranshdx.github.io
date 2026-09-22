@@ -156,7 +156,7 @@ const projects = [
   },
   {
     name: "bean",
-    description: "A restapi which exposes discord rpc data of users",
+    description: "A restapi which exposes discord rpc data of users (yes its used in the portfolio)",
     language: "Javascript",
     languageColor: "#f1e05a",
     isCompleted: true,
