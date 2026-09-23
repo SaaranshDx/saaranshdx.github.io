@@ -12,9 +12,7 @@
   <video id="background-video" class="background" autoplay muted loop playsinline>
     <source src="./assets/background.mp4" type="video/mp4">
   </video>
-  <audio id="background-audio" loop preload="auto">
-    <source src="./assets/background.mp3" type="audio/mpeg">
-  </audio>
+  <audio id="background-audio" data-audio-element preload="auto"></audio>
 
   <div class="overlay"></div>
   <div class="vignette"></div>
@@ -23,9 +21,26 @@
     <button id="enter-site" class="enter-button" type="button">click to enter</button>
   </div>
 
-  <div id="music-toast" class="music-toast" role="status" aria-live="polite">
-    playing snowfall by Øneheart
-  </div>
+  <section id="music-toast" class="music-toast" hidden aria-live="polite" aria-label="Ambient music player">
+    <div class="music-toast-header">
+      <button class="music-summary" type="button" aria-expanded="false" aria-controls="music-details">
+        <span class="music-summary-text">
+          <span class="music-artist" data-audio-artist>Discovering /music</span>
+          <span class="music-title" data-audio-title>Ambient music</span>
+        </span>
+        <span class="music-summary-icon" aria-hidden="true">+</span>
+      </button>
+      <button class="music-close" type="button" aria-label="Close music notification" title="Close">×</button>
+    </div>
+    <div class="music-controls" id="music-details" hidden>
+      <label class="music-volume">
+        <span>VOL</span>
+        <input data-audio-volume type="range" min="0" max="1" step="0.01" value="0.35" aria-label="Ambient music volume">
+      </label>
+      <button class="music-mute" type="button" data-audio-mute aria-pressed="false">Mute</button>
+      <span class="music-status" data-audio-status hidden>Looking for audio files in /music...</span>
+    </div>
+  </section>
 
   <main class="profile">
     <div class="avatar-wrap">

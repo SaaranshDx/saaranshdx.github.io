@@ -234,6 +234,17 @@ const cancelExternalWarning = document.getElementById("cancel-external-warning")
 const continueExternalWarning = document.getElementById("continue-external-warning");
 const currentYear = document.getElementById("current-year");
 let pendingExternalUrl = "";
+let ambientTracks = [];
+let ambientTrackIndex = 0;
+let ambientMuted = false;
+const audioTitle = document.querySelector("[data-audio-title]");
+const audioArtist = document.querySelector("[data-audio-artist]");
+const audioStatus = document.querySelector("[data-audio-status]");
+const audioVolume = document.querySelector("[data-audio-volume]");
+const audioMute = document.querySelector("[data-audio-mute]");
+const audioSummary = document.querySelector(".music-summary");
+const audioDetails = document.querySelector(".music-controls");
+const audioClose = document.querySelector(".music-close");
 
 currentYear.textContent = String(new Date().getFullYear());
 
@@ -245,7 +256,6 @@ async function enterSiteNow() {
   document.body.classList.remove("site-locked");
   document.documentElement.classList.remove("site-locked");
   musicToast.classList.add("is-visible");
-  window.setTimeout(() => musicToast.classList.remove("is-visible"), 3500);
 
   try {
     await audio.play();
@@ -258,6 +268,150 @@ async function enterSiteNow() {
 }
 
 enterSite.addEventListener("click", enterSiteNow);
+
+const audioExtensions = /\.(aac|flac|m4a|mp3|mp4|oga|ogg|wav|webm)$/i;
+
+function formatAudioLabel(label) {
+  return label.replace(/[\-_+–—]+/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function decodeAudioName(fileName) {
+  const withoutExtension = fileName.replace(audioExtensions, "");
+  const separator = withoutExtension.indexOf("_");
+  if (separator < 1 || separator === withoutExtension.length - 1) return null;
+  return {
+    artist: formatAudioLabel(withoutExtension.slice(0, separator)),
+    title: formatAudioLabel(withoutExtension.slice(separator + 1))
+  };
+}
+
+async function readMusicListing() {
+  try {
+    const response = await fetch("./music/manifest.json", { cache: "no-store" });
+    if (response.ok) {
+      const manifest = await response.json();
+      return Array.isArray(manifest) ? manifest : manifest.files || [];
+    }
+  } catch {
+    // Fall through to directory discovery.
+  }
+
+  try {
+    const response = await fetch("./music/", { cache: "no-store" });
+    if (!response.ok) return [];
+    const directory = await response.text();
+    const documentFragment = new DOMParser().parseFromString(directory, "text/html");
+    return [...documentFragment.querySelectorAll("a[href]")]
+      .map((link) => link.getAttribute("href"))
+      .filter((href) => href && audioExtensions.test(href))
+      .map((href) => decodeURIComponent(href.split("/").pop()));
+  } catch {
+    return [];
+  }
+}
+
+function trackFromManifestEntry(entry) {
+  const source = typeof entry === "string" ? entry : entry.file || entry.src;
+  if (!source) return null;
+  const decodedSource = decodeURIComponent(String(source));
+  const fileName = decodedSource.split("/").pop();
+  const metadata = typeof entry === "object" && (entry.artist || entry.title)
+    ? { artist: entry.artist || "Unknown artist", title: entry.title || fileName }
+    : decodeAudioName(fileName);
+  if (!metadata) return null;
+  return {
+    ...metadata,
+    source: decodedSource.startsWith(".") || decodedSource.startsWith("/") || /^https?:/i.test(decodedSource)
+      ? decodedSource
+      : `./music/${encodeURIComponent(fileName)}`
+  };
+}
+
+async function setupAmbientMusic() {
+  ambientTracks = (await readMusicListing()).map(trackFromManifestEntry).filter(Boolean);
+  musicToast.hidden = false;
+  musicToast.setAttribute("aria-hidden", "false");
+
+  audioSummary.addEventListener("click", () => {
+    const isExpanded = audioSummary.getAttribute("aria-expanded") === "true";
+    audioSummary.setAttribute("aria-expanded", String(!isExpanded));
+    audioDetails.hidden = isExpanded;
+    musicToast.classList.toggle("is-expanded", !isExpanded);
+  });
+
+  audioClose.addEventListener("click", () => {
+    musicToast.hidden = true;
+    musicToast.setAttribute("aria-hidden", "true");
+  });
+
+  if (!ambientTracks.length) {
+    audioTitle.textContent = "No ambient tracks yet";
+    audioArtist.textContent = "Add {artist}_{trackname}.wav to /music";
+    audioStatus.textContent = "No supported audio files found in /music.";
+    audioStatus.hidden = false;
+    audioSummary.disabled = true;
+    audioVolume.disabled = true;
+    audioMute.disabled = true;
+    return;
+  }
+
+  ambientTrackIndex = Math.floor(Math.random() * ambientTracks.length);
+  audio.loop = false;
+
+  const setTrack = (track) => {
+    audioTitle.textContent = track.title;
+    audioArtist.textContent = track.artist;
+    audioStatus.textContent = "Playing softly in the background.";
+    audio.src = track.source;
+  };
+
+  const playAmbientTrack = () => audio.play().then(() => {
+    audioStatus.textContent = "Playing softly in the background.";
+  }).catch(() => {
+    audioStatus.textContent = "Tap anywhere to start the ambient track.";
+  });
+
+  setTrack(ambientTracks[ambientTrackIndex]);
+  audio.volume = Number(audioVolume.value);
+  playAmbientTrack();
+
+  const startAfterInteraction = () => {
+    audio.muted = ambientMuted;
+    playAmbientTrack();
+    document.removeEventListener("pointerdown", startAfterInteraction);
+    document.removeEventListener("keydown", startAfterInteraction);
+  };
+
+  document.addEventListener("pointerdown", startAfterInteraction);
+  document.addEventListener("keydown", startAfterInteraction);
+  audio.addEventListener("play", () => {
+    audioStatus.textContent = "Playing softly in the background.";
+  });
+  audio.addEventListener("ended", () => {
+    ambientTrackIndex = (ambientTrackIndex + 1) % ambientTracks.length;
+    setTrack(ambientTracks[ambientTrackIndex]);
+    playAmbientTrack();
+  });
+  audioVolume.addEventListener("input", () => {
+    audio.volume = Number(audioVolume.value);
+    ambientMuted = false;
+    audio.muted = false;
+    audioMute.textContent = "Mute";
+    audioMute.setAttribute("aria-pressed", "false");
+  });
+  audioMute.addEventListener("click", () => {
+    ambientMuted = !audio.muted;
+    audio.muted = ambientMuted;
+    audioMute.textContent = ambientMuted ? "Unmute" : "Mute";
+    audioMute.setAttribute("aria-pressed", String(ambientMuted));
+    soundToggle.innerHTML = ambientMuted
+      ? '<i class="fa-solid fa-volume-xmark" aria-hidden="true"></i>'
+      : '<i class="fa-solid fa-volume-high" aria-hidden="true"></i>';
+    soundToggle.setAttribute("aria-pressed", String(!ambientMuted));
+  });
+}
+
+setupAmbientMusic();
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Enter" && !entryScreen.classList.contains("is-entered")) {
@@ -402,22 +556,24 @@ continueExternalWarning.addEventListener("click", () => {
 });
 
 soundToggle.addEventListener("click", async () => {
-  audio.muted = !audio.muted;
+  ambientMuted = !ambientMuted;
+  audio.muted = ambientMuted;
 
-  if (!audio.muted) {
+  if (!ambientMuted) {
     try {
       await audio.play();
     } catch {
+      ambientMuted = true;
       audio.muted = true;
       return;
     }
   }
 
-  soundToggle.innerHTML = audio.muted
+  soundToggle.innerHTML = ambientMuted
     ? '<i class="fa-solid fa-volume-xmark" aria-hidden="true"></i>'
     : '<i class="fa-solid fa-volume-high" aria-hidden="true"></i>';
-  soundToggle.setAttribute("aria-pressed", String(!audio.muted));
-  soundToggle.setAttribute("aria-label", audio.muted ? "Enable background sound" : "Disable background sound");
+  soundToggle.setAttribute("aria-pressed", String(!ambientMuted));
+  soundToggle.setAttribute("aria-label", ambientMuted ? "Enable background sound" : "Disable background sound");
 });
 
 const beanUrl = "https://bean.apps.bot-hosting.cloud/data/1189872646163284041";
