@@ -895,32 +895,81 @@ const weatherMeta = {
 };
 
 async function loadWeather() {
-  try {
-    const params = new URLSearchParams({
-      latitude: "28.6139",
-      longitude: "77.2090",
-      current: "temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m",
-      timezone: DELHI_TIME_ZONE
-    });
-    const response = await fetch("https://api.open-meteo.com/v1/forecast?" + params);
-    if (!response.ok) throw new Error(String(response.status));
-    const current = (await response.json()).current;
-    const [condition, icon] = weatherMeta[current.weather_code] || ["Unknown", "fa-cloud"];
+  const weatherCodeMap = {
+    113: ["Clear", "fa-sun"], 116: ["Partly cloudy", "fa-cloud-sun"],
+    119: ["Cloudy", "fa-cloud"], 122: ["Overcast", "fa-cloud"],
+    143: ["Mist", "fa-smog"], 176: ["Light rain", "fa-cloud-rain"],
+    179: ["Light snow", "fa-snowflake"], 182: ["Sleet", "fa-cloud-rain"],
+    185: ["Sleet", "fa-cloud-rain"], 200: ["Thunderstorm", "fa-cloud-bolt"],
+    227: ["Light snow", "fa-snowflake"], 230: ["Heavy snow", "fa-snowflake"],
+    248: ["Fog", "fa-smog"], 260: ["Fog", "fa-smog"],
+    263: ["Light rain", "fa-cloud-rain"], 266: ["Light rain", "fa-cloud-rain"],
+    281: ["Light sleet", "fa-cloud-rain"], 284: ["Sleet", "fa-cloud-rain"],
+    293: ["Light rain", "fa-cloud-rain"], 296: ["Rain", "fa-cloud-rain"],
+    299: ["Heavy rain", "fa-cloud-showers-heavy"], 302: ["Heavy rain", "fa-cloud-showers-heavy"],
+    305: ["Rain", "fa-cloud-showers-heavy"], 308: ["Heavy rain", "fa-cloud-showers-heavy"],
+    311: ["Sleet", "fa-cloud-rain"], 314: ["Sleet", "fa-cloud-rain"],
+    317: ["Sleet", "fa-cloud-rain"], 320: ["Sleet", "fa-cloud-rain"],
+    323: ["Snow", "fa-snowflake"], 326: ["Snow", "fa-snowflake"],
+    329: ["Heavy snow", "fa-snowflake"], 332: ["Heavy snow", "fa-snowflake"],
+    335: ["Heavy snow", "fa-snowflake"], 338: ["Heavy snow", "fa-snowflake"],
+    350: ["Ice pellets", "fa-cloud-rain"], 353: ["Light rain", "fa-cloud-rain"],
+    356: ["Heavy rain", "fa-cloud-showers-heavy"], 359: ["Heavy rain", "fa-cloud-showers-heavy"],
+    362: ["Sleet", "fa-cloud-rain"], 365: ["Sleet", "fa-cloud-rain"],
+    368: ["Snow", "fa-snowflake"], 371: ["Snow", "fa-snowflake"],
+    374: ["Ice pellets", "fa-cloud-rain"], 377: ["Ice pellets", "fa-cloud-rain"],
+    386: ["Thunderstorm", "fa-cloud-bolt"], 389: ["Thunderstorm", "fa-cloud-bolt"],
+    392: ["Thunderstorm", "fa-cloud-bolt"], 395: ["Thunderstorm", "fa-cloud-bolt"]
+  };
 
-    weatherTemperatureEl.textContent = Math.round(current.temperature_2m) + "°C";
+  function applyWeather(current, location = "Delhi") {
+    const [condition, icon] = weatherCodeMap[current.weatherCode] || [current.weatherDesc?.[0]?.value || "Unknown", "fa-cloud"];
+    weatherTemperatureEl.textContent = Math.round(Number(current.temp_C)) + "°C";
     weatherConditionEl.textContent = condition;
-    weatherHumidityEl.textContent = Math.round(current.relative_humidity_2m) + "%";
-    weatherWindEl.textContent = Math.round(current.wind_speed_10m) + " km/h";
-    weatherFeelsEl.textContent = Math.round(current.apparent_temperature) + "°C";
-    weatherLocationEl.textContent = "Delhi";
+    weatherHumidityEl.textContent = Math.round(Number(current.humidity)) + "%";
+    weatherWindEl.textContent = Math.round(Number(current.windspeedKmph)) + " km/h";
+    weatherFeelsEl.textContent = Math.round(Number(current.FeelsLikeC)) + "°C";
+    weatherLocationEl.textContent = location;
     weatherIconEl.className = "fa-solid " + icon + " weather-icon";
+  }
+
+  try {
+    const response = await fetch("https://wttr.in/Delhi?format=j1", { cache: "no-store" });
+    if (!response.ok) throw new Error(String(response.status));
+    const data = await response.json();
+    const current = data.current_condition?.[0];
+    if (!current) throw new Error("No current weather data");
+    applyWeather(current);
+    return;
   } catch {
-    weatherTemperatureEl.textContent = "--°C";
-    weatherConditionEl.textContent = "weather unavailable";
-    weatherHumidityEl.textContent = "--%";
-    weatherWindEl.textContent = "-- km/h";
-    weatherFeelsEl.textContent = "--°C";
-    weatherIconEl.className = "fa-solid fa-cloud weather-icon";
+    try {
+      const params = new URLSearchParams({
+        latitude: "28.6139",
+        longitude: "77.2090",
+        current: "temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m",
+        timezone: DELHI_TIME_ZONE
+      });
+      const response = await fetch("https://api.open-meteo.com/v1/forecast?" + params, { cache: "no-store" });
+      if (!response.ok) throw new Error(String(response.status));
+      const current = (await response.json()).current;
+      const [condition, icon] = weatherMeta[current.weather_code] || ["Unknown", "fa-cloud"];
+      applyWeather({
+        temp_C: current.temperature_2m,
+        humidity: current.relative_humidity_2m,
+        windspeedKmph: current.wind_speed_10m,
+        FeelsLikeC: current.apparent_temperature,
+        weatherCode: current.weather_code,
+        weatherDesc: [{ value: condition }]
+      });
+      return;
+    } catch {
+      weatherTemperatureEl.textContent = "--°C";
+      weatherConditionEl.textContent = "weather unavailable";
+      weatherHumidityEl.textContent = "--%";
+      weatherWindEl.textContent = "-- km/h";
+      weatherFeelsEl.textContent = "--°C";
+      weatherIconEl.className = "fa-solid fa-cloud weather-icon";
+    }
   }
 }
 
