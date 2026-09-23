@@ -90,14 +90,18 @@
         <div class="weather-time-grid">
           <div class="time-widget">
             <span class="widget-kicker">clock</span>
-            <div class="clock-face" aria-hidden="true">
-              <span class="clock-hand clock-hour" id="clock-hour"></span>
-              <span class="clock-hand clock-minute" id="clock-minute"></span>
-              <span class="clock-hand clock-second" id="clock-second"></span>
-              <span class="clock-pin"></span>
+            <div class="clock-content">
+              <div class="clock-face" aria-hidden="true">
+                <span class="clock-hand clock-hour" id="clock-hour"></span>
+                <span class="clock-hand clock-minute" id="clock-minute"></span>
+                <span class="clock-hand clock-second" id="clock-second"></span>
+                <span class="clock-pin"></span>
+              </div>
+              <div class="clock-info">
+                <strong id="local-time">--:--:-- --</strong>
+                <span id="local-date">loading...</span>
+              </div>
             </div>
-            <strong id="local-time">--:--:-- --</strong>
-            <span id="local-date">loading...</span>
           </div>
           <div class="weather-widget">
             <span class="widget-kicker">weather</span>
