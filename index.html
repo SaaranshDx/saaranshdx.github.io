@@ -6,7 +6,7 @@
   <meta name="description" content="Saaransh_Xd - developer, builder, internet resident.">
   <title>Saaransh_Xd</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-  <link rel="stylesheet" href="./css/main.css?v=4">
+  <link rel="stylesheet" href="./css/main.css?v=5">
 </head>
 <body>
   <video id="background-video" class="background" autoplay muted loop playsinline>
@@ -89,14 +89,30 @@
         <span class="section-label">local</span>
         <div class="weather-time-grid">
           <div class="time-widget">
-            <span class="widget-kicker">time</span>
-            <strong id="local-time">--:--:--</strong>
+            <span class="widget-kicker">clock</span>
+            <div class="clock-face" aria-hidden="true">
+              <span class="clock-hand clock-hour" id="clock-hour"></span>
+              <span class="clock-hand clock-minute" id="clock-minute"></span>
+              <span class="clock-hand clock-second" id="clock-second"></span>
+              <span class="clock-pin"></span>
+            </div>
+            <strong id="local-time">--:--:-- --</strong>
             <span id="local-date">loading...</span>
           </div>
           <div class="weather-widget">
             <span class="widget-kicker">weather</span>
-            <strong id="weather-temperature">--°C</strong>
-            <span id="weather-condition">loading...</span>
+            <div class="weather-main">
+              <i id="weather-icon" class="fa-solid fa-cloud weather-icon" aria-hidden="true"></i>
+              <div>
+                <strong id="weather-temperature">--°C</strong>
+                <span id="weather-condition">loading...</span>
+              </div>
+            </div>
+            <div class="weather-details">
+              <span><i class="fa-solid fa-droplet" aria-hidden="true"></i><b id="weather-humidity">--%</b> humidity</span>
+              <span><i class="fa-solid fa-wind" aria-hidden="true"></i><b id="weather-wind">-- km/h</b> wind</span>
+              <span><i class="fa-solid fa-temperature-half" aria-hidden="true"></i><b id="weather-feels">--°C</b> feels like</span>
+            </div>
             <span id="weather-location">Delhi</span>
           </div>
         </div>
@@ -149,6 +165,6 @@
     </section>
   </div>
 
-  <script src="./js/main.js?v=5"></script>
+  <script src="./js/main.js?v=6"></script>
 </body>
 </html>

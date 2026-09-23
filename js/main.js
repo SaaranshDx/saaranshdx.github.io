@@ -819,32 +819,112 @@ loadActivity();
 setInterval(() => loadActivity(false), 1000);
 setInterval(updateActivityTimelines, 1000);
 
-const localTimeEl=document.getElementById("local-time");
-const localDateEl=document.getElementById("local-date");
-const weatherTemperatureEl=document.getElementById("weather-temperature");
-const weatherConditionEl=document.getElementById("weather-condition");
-const weatherLocationEl=document.getElementById("weather-location");
-function updateLocalClock(){
-  const now=new Date();
-  localTimeEl.textContent=new Intl.DateTimeFormat("en-IN",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(now);
-  localDateEl.textContent=new Intl.DateTimeFormat("en-IN",{weekday:"long",day:"numeric",month:"long"}).format(now);
+
+const localTimeEl = document.getElementById("local-time");
+const localDateEl = document.getElementById("local-date");
+const clockHourEl = document.getElementById("clock-hour");
+const clockMinuteEl = document.getElementById("clock-minute");
+const clockSecondEl = document.getElementById("clock-second");
+const weatherTemperatureEl = document.getElementById("weather-temperature");
+const weatherConditionEl = document.getElementById("weather-condition");
+const weatherLocationEl = document.getElementById("weather-location");
+const weatherIconEl = document.getElementById("weather-icon");
+const weatherHumidityEl = document.getElementById("weather-humidity");
+const weatherWindEl = document.getElementById("weather-wind");
+const weatherFeelsEl = document.getElementById("weather-feels");
+
+const DELHI_TIME_ZONE = "Asia/Kolkata";
+
+function delhiClockParts(date = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: DELHI_TIME_ZONE,
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: false
+  }).formatToParts(date);
+  return Object.fromEntries(parts.filter((part) => part.type !== "literal").map((part) => [part.type, Number(part.value)]));
 }
-const weatherCodes={0:"Clear",1:"Mostly clear",2:"Partly cloudy",3:"Overcast",45:"Foggy",48:"Foggy",51:"Light drizzle",53:"Drizzle",55:"Heavy drizzle",61:"Light rain",63:"Rain",65:"Heavy rain",71:"Light snow",73:"Snow",75:"Heavy snow",80:"Rain showers",81:"Rain showers",82:"Heavy showers",95:"Thunderstorm",96:"Thunderstorm",99:"Thunderstorm"};
-async function loadWeather(){
-  try{
-    const response=await fetch("https://api.open-meteo.com/v1/forecast?latitude=28.6139&longitude=77.2090&current=temperature_2m,weather_code&timezone=Asia%2FKolkata");
-    if(!response.ok) throw new Error(String(response.status));
-    const data=await response.json();
-    const current=data.current;
-    weatherTemperatureEl.textContent=Math.round(current.temperature_2m)+"°C";
-    weatherConditionEl.textContent=weatherCodes[current.weather_code]||"Unknown";
-    weatherLocationEl.textContent="Delhi";
-  }catch{
-    weatherTemperatureEl.textContent="--°C";
-    weatherConditionEl.textContent="weather unavailable";
+
+function updateLocalClock() {
+  const now = new Date();
+  localTimeEl.textContent = new Intl.DateTimeFormat("en-US", {
+    timeZone: DELHI_TIME_ZONE,
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true
+  }).format(now);
+
+  localDateEl.textContent = new Intl.DateTimeFormat("en-IN", {
+    timeZone: DELHI_TIME_ZONE,
+    weekday: "long",
+    day: "numeric",
+    month: "long"
+  }).format(now);
+
+  const { hour, minute, second } = delhiClockParts(now);
+  const h = hour % 12;
+  clockHourEl.style.transform = "translateX(-50%) rotate(" + ((h * 30) + (minute * .5)) + "deg)";
+  clockMinuteEl.style.transform = "translateX(-50%) rotate(" + ((minute * 6) + (second * .1)) + "deg)";
+  clockSecondEl.style.transform = "translateX(-50%) rotate(" + (second * 6) + "deg)";
+}
+
+const weatherMeta = {
+  0: ["Clear", "fa-sun"],
+  1: ["Mostly clear", "fa-cloud-sun"],
+  2: ["Partly cloudy", "fa-cloud-sun"],
+  3: ["Overcast", "fa-cloud"],
+  45: ["Foggy", "fa-smog"],
+  48: ["Foggy", "fa-smog"],
+  51: ["Light drizzle", "fa-cloud-rain"],
+  53: ["Drizzle", "fa-cloud-rain"],
+  55: ["Heavy drizzle", "fa-cloud-showers-heavy"],
+  61: ["Light rain", "fa-cloud-rain"],
+  63: ["Rain", "fa-cloud-showers-heavy"],
+  65: ["Heavy rain", "fa-cloud-showers-heavy"],
+  71: ["Light snow", "fa-snowflake"],
+  73: ["Snow", "fa-snowflake"],
+  75: ["Heavy snow", "fa-snowflake"],
+  80: ["Rain showers", "fa-cloud-sun-rain"],
+  81: ["Rain showers", "fa-cloud-showers-heavy"],
+  82: ["Heavy showers", "fa-cloud-showers-heavy"],
+  95: ["Thunderstorm", "fa-cloud-bolt"],
+  96: ["Thunderstorm", "fa-cloud-bolt"],
+  99: ["Thunderstorm", "fa-cloud-bolt"]
+};
+
+async function loadWeather() {
+  try {
+    const params = new URLSearchParams({
+      latitude: "28.6139",
+      longitude: "77.2090",
+      current: "temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m",
+      timezone: DELHI_TIME_ZONE
+    });
+    const response = await fetch("https://api.open-meteo.com/v1/forecast?" + params);
+    if (!response.ok) throw new Error(String(response.status));
+    const current = (await response.json()).current;
+    const [condition, icon] = weatherMeta[current.weather_code] || ["Unknown", "fa-cloud"];
+
+    weatherTemperatureEl.textContent = Math.round(current.temperature_2m) + "°C";
+    weatherConditionEl.textContent = condition;
+    weatherHumidityEl.textContent = Math.round(current.relative_humidity_2m) + "%";
+    weatherWindEl.textContent = Math.round(current.wind_speed_10m) + " km/h";
+    weatherFeelsEl.textContent = Math.round(current.apparent_temperature) + "°C";
+    weatherLocationEl.textContent = "Delhi";
+    weatherIconEl.className = "fa-solid " + icon + " weather-icon";
+  } catch {
+    weatherTemperatureEl.textContent = "--°C";
+    weatherConditionEl.textContent = "weather unavailable";
+    weatherHumidityEl.textContent = "--%";
+    weatherWindEl.textContent = "-- km/h";
+    weatherFeelsEl.textContent = "--°C";
+    weatherIconEl.className = "fa-solid fa-cloud weather-icon";
   }
 }
+
 updateLocalClock();
 loadWeather();
-setInterval(updateLocalClock,1000);
-setInterval(loadWeather,15*60*1000);
+setInterval(updateLocalClock, 1000);
+setInterval(loadWeather, 15 * 60 * 1000);
