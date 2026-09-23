@@ -895,35 +895,12 @@ const weatherMeta = {
 };
 
 async function loadWeather() {
-  const weatherCodeMap = {
-    113: ["Clear", "fa-sun"], 116: ["Partly cloudy", "fa-cloud-sun"],
-    119: ["Cloudy", "fa-cloud"], 122: ["Overcast", "fa-cloud"],
-    143: ["Mist", "fa-smog"], 176: ["Light rain", "fa-cloud-rain"],
-    179: ["Light snow", "fa-snowflake"], 182: ["Sleet", "fa-cloud-rain"],
-    185: ["Sleet", "fa-cloud-rain"], 200: ["Thunderstorm", "fa-cloud-bolt"],
-    227: ["Light snow", "fa-snowflake"], 230: ["Heavy snow", "fa-snowflake"],
-    248: ["Fog", "fa-smog"], 260: ["Fog", "fa-smog"],
-    263: ["Light rain", "fa-cloud-rain"], 266: ["Light rain", "fa-cloud-rain"],
-    281: ["Light sleet", "fa-cloud-rain"], 284: ["Sleet", "fa-cloud-rain"],
-    293: ["Light rain", "fa-cloud-rain"], 296: ["Rain", "fa-cloud-rain"],
-    299: ["Heavy rain", "fa-cloud-showers-heavy"], 302: ["Heavy rain", "fa-cloud-showers-heavy"],
-    305: ["Rain", "fa-cloud-showers-heavy"], 308: ["Heavy rain", "fa-cloud-showers-heavy"],
-    311: ["Sleet", "fa-cloud-rain"], 314: ["Sleet", "fa-cloud-rain"],
-    317: ["Sleet", "fa-cloud-rain"], 320: ["Sleet", "fa-cloud-rain"],
-    323: ["Snow", "fa-snowflake"], 326: ["Snow", "fa-snowflake"],
-    329: ["Heavy snow", "fa-snowflake"], 332: ["Heavy snow", "fa-snowflake"],
-    335: ["Heavy snow", "fa-snowflake"], 338: ["Heavy snow", "fa-snowflake"],
-    350: ["Ice pellets", "fa-cloud-rain"], 353: ["Light rain", "fa-cloud-rain"],
-    356: ["Heavy rain", "fa-cloud-showers-heavy"], 359: ["Heavy rain", "fa-cloud-showers-heavy"],
-    362: ["Sleet", "fa-cloud-rain"], 365: ["Sleet", "fa-cloud-rain"],
-    368: ["Snow", "fa-snowflake"], 371: ["Snow", "fa-snowflake"],
-    374: ["Ice pellets", "fa-cloud-rain"], 377: ["Ice pellets", "fa-cloud-rain"],
-    386: ["Thunderstorm", "fa-cloud-bolt"], 389: ["Thunderstorm", "fa-cloud-bolt"],
-    392: ["Thunderstorm", "fa-cloud-bolt"], 395: ["Thunderstorm", "fa-cloud-bolt"]
-  };
+  function applyWeather(current, location = "Delhi", conditionOverride = null, iconOverride = null) {
+    const code = Number(current.weatherCode);
+    const [condition, icon] = conditionOverride && iconOverride
+      ? [conditionOverride, iconOverride]
+      : weatherMeta[code] || [current.weatherDesc?.[0]?.value || "Unknown", "fa-cloud"];
 
-  function applyWeather(current, location = "Delhi") {
-    const [condition, icon] = weatherCodeMap[current.weatherCode] || [current.weatherDesc?.[0]?.value || "Unknown", "fa-cloud"];
     weatherTemperatureEl.textContent = Math.round(Number(current.temp_C)) + "°C";
     weatherConditionEl.textContent = condition;
     weatherHumidityEl.textContent = Math.round(Number(current.humidity)) + "%";
@@ -933,34 +910,93 @@ async function loadWeather() {
     weatherIconEl.className = "fa-solid " + icon + " weather-icon";
   }
 
+  // Open-Meteo is the primary source because its current-condition codes map
+  // directly to the widget's condition labels, avoiding wttr.in's occasional
+  // "mist/haze" wording when the sky is actually clear.
   try {
-    const response = await fetch("https://wttr.in/Delhi?format=j1", { cache: "no-store" });
+    const params = new URLSearchParams({
+      latitude: "28.6139",
+      longitude: "77.2090",
+      current: "temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m",
+      timezone: DELHI_TIME_ZONE
+    });
+    const response = await fetch("https://api.open-meteo.com/v1/forecast?" + params, { cache: "no-store" });
     if (!response.ok) throw new Error(String(response.status));
-    const data = await response.json();
-    const current = data.current_condition?.[0];
+    const current = (await response.json()).current;
     if (!current) throw new Error("No current weather data");
-    applyWeather(current);
+
+    const [condition, icon] = weatherMeta[current.weather_code] || ["Unknown", "fa-cloud"];
+    applyWeather({
+      temp_C: current.temperature_2m,
+      humidity: current.relative_humidity_2m,
+      windspeedKmph: current.wind_speed_10m,
+      FeelsLikeC: current.apparent_temperature,
+      weatherCode: current.weather_code,
+      weatherDesc: [{ value: condition }]
+    }, "Delhi", condition, icon);
     return;
   } catch {
+    // wttr.in remains available as a no-key fallback.
     try {
-      const params = new URLSearchParams({
-        latitude: "28.6139",
-        longitude: "77.2090",
-        current: "temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m",
-        timezone: DELHI_TIME_ZONE
-      });
-      const response = await fetch("https://api.open-meteo.com/v1/forecast?" + params, { cache: "no-store" });
+      const response = await fetch("https://wttr.in/Delhi?format=j1", { cache: "no-store" });
       if (!response.ok) throw new Error(String(response.status));
-      const current = (await response.json()).current;
-      const [condition, icon] = weatherMeta[current.weather_code] || ["Unknown", "fa-cloud"];
-      applyWeather({
-        temp_C: current.temperature_2m,
-        humidity: current.relative_humidity_2m,
-        windspeedKmph: current.wind_speed_10m,
-        FeelsLikeC: current.apparent_temperature,
-        weatherCode: current.weather_code,
-        weatherDesc: [{ value: condition }]
-      });
+      const data = await response.json();
+      const current = data.current_condition?.[0];
+      if (!current) throw new Error("No current weather data");
+
+      const wttrCode = Number(current.weatherCode);
+      const wttrMap = {
+        113: ["Clear", "fa-sun"],
+        116: ["Partly cloudy", "fa-cloud-sun"],
+        119: ["Cloudy", "fa-cloud"],
+        122: ["Overcast", "fa-cloud"],
+        143: ["Mist", "fa-smog"],
+        176: ["Light rain", "fa-cloud-rain"],
+        179: ["Light snow", "fa-snowflake"],
+        182: ["Sleet", "fa-cloud-rain"],
+        185: ["Sleet", "fa-cloud-rain"],
+        200: ["Thunderstorm", "fa-cloud-bolt"],
+        227: ["Light snow", "fa-snowflake"],
+        230: ["Heavy snow", "fa-snowflake"],
+        248: ["Fog", "fa-smog"],
+        260: ["Fog", "fa-smog"],
+        263: ["Light rain", "fa-cloud-rain"],
+        266: ["Light rain", "fa-cloud-rain"],
+        281: ["Light sleet", "fa-cloud-rain"],
+        284: ["Sleet", "fa-cloud-rain"],
+        293: ["Light rain", "fa-cloud-rain"],
+        296: ["Rain", "fa-cloud-showers-heavy"],
+        299: ["Heavy rain", "fa-cloud-showers-heavy"],
+        302: ["Heavy rain", "fa-cloud-showers-heavy"],
+        305: ["Rain", "fa-cloud-showers-heavy"],
+        308: ["Heavy rain", "fa-cloud-showers-heavy"],
+        311: ["Sleet", "fa-cloud-rain"],
+        314: ["Sleet", "fa-cloud-rain"],
+        317: ["Sleet", "fa-cloud-rain"],
+        320: ["Sleet", "fa-cloud-rain"],
+        323: ["Snow", "fa-snowflake"],
+        326: ["Snow", "fa-snowflake"],
+        329: ["Heavy snow", "fa-snowflake"],
+        332: ["Heavy snow", "fa-snowflake"],
+        335: ["Heavy snow", "fa-snowflake"],
+        338: ["Heavy snow", "fa-snowflake"],
+        350: ["Ice pellets", "fa-cloud-rain"],
+        353: ["Light rain", "fa-cloud-rain"],
+        356: ["Heavy rain", "fa-cloud-showers-heavy"],
+        359: ["Heavy rain", "fa-cloud-showers-heavy"],
+        362: ["Sleet", "fa-cloud-rain"],
+        365: ["Sleet", "fa-cloud-rain"],
+        368: ["Snow", "fa-snowflake"],
+        371: ["Snow", "fa-snowflake"],
+        374: ["Ice pellets", "fa-cloud-rain"],
+        377: ["Ice pellets", "fa-cloud-rain"],
+        386: ["Thunderstorm", "fa-cloud-bolt"],
+        389: ["Thunderstorm", "fa-cloud-bolt"],
+        392: ["Thunderstorm", "fa-cloud-bolt"],
+        395: ["Thunderstorm", "fa-cloud-bolt"]
+      };
+      const [condition, icon] = wttrMap[wttrCode] || [current.weatherDesc?.[0]?.value || "Unknown", "fa-cloud"];
+      applyWeather(current, "Delhi", condition, icon);
       return;
     } catch {
       weatherTemperatureEl.textContent = "--°C";
@@ -972,7 +1008,6 @@ async function loadWeather() {
     }
   }
 }
-
 updateLocalClock();
 loadWeather();
 setInterval(updateLocalClock, 1000);
