@@ -179,7 +179,7 @@ const projects = [
     languageColor: "#A97BFF",
     isCompleted: true,
     github: "https://github.com/SaaranshDx/hex",
-    live: ""
+    live: "https://modrinth.com/mod/hex-capes"
   },
   {
     name: "discord bridge",
