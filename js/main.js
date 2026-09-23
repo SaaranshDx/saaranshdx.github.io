@@ -209,6 +209,7 @@ const moreLinksToggle = document.getElementById("more-links-toggle");
 const closeLinks = document.getElementById("close-links");
 const video = document.getElementById("background-video");
 const audio = document.getElementById("background-audio");
+const statusIndicator = document.getElementById("status-indicator");
 const soundToggle = document.getElementById("sound-toggle");
 const scrollHint = document.querySelector(".scroll-hint");
 const heroFadeElements = document.querySelectorAll(".corner, .scroll-hint");
@@ -414,6 +415,22 @@ const LISTENING_KEYWORDS = [
 const activityPanel = document.getElementById("panel-activity");
 const githubPanel = document.getElementById("panel-github");
 
+const statusAssets = {
+  online: "./assets/online.webp",
+  idle: "./assets/idle.webp",
+  dnd: "./assets/dnd.webp",
+  offline: "./assets/offline.webp"
+};
+
+function updateStatus(data) {
+  const status = data.clientStatus?.desktop || data.status || "offline";
+  const normalizedStatus = statusAssets[status] ? status : "offline";
+  const label = `Status: ${normalizedStatus}`;
+  statusIndicator.src = statusAssets[normalizedStatus];
+  statusIndicator.alt = label;
+  statusIndicator.title = label;
+}
+
 function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, (ch) => ({
     "&": "&amp;",
@@ -537,6 +554,7 @@ async function loadActivity(showLoading = true) {
     const response = await fetch(beanUrl);
     if (!response.ok) throw new Error(String(response.status));
     const data = await response.json();
+    updateStatus(data);
     const acts = data.activities || [];
     const listening = acts.filter(isListening);
     const playing = acts.filter((activity) => !isListening(activity));
@@ -553,6 +571,7 @@ async function loadActivity(showLoading = true) {
         "nothing"
       );
   } catch {
+    updateStatus({ status: "offline" });
     activityPanel.innerHTML = `
       <div class="api-down">
         <i class="fa-solid fa-plug-circle-exclamation" aria-hidden="true"></i>
