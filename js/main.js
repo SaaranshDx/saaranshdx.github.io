@@ -818,3 +818,33 @@ loadGithub();
 loadActivity();
 setInterval(() => loadActivity(false), 1000);
 setInterval(updateActivityTimelines, 1000);
+
+const localTimeEl=document.getElementById("local-time");
+const localDateEl=document.getElementById("local-date");
+const weatherTemperatureEl=document.getElementById("weather-temperature");
+const weatherConditionEl=document.getElementById("weather-condition");
+const weatherLocationEl=document.getElementById("weather-location");
+function updateLocalClock(){
+  const now=new Date();
+  localTimeEl.textContent=new Intl.DateTimeFormat("en-IN",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(now);
+  localDateEl.textContent=new Intl.DateTimeFormat("en-IN",{weekday:"long",day:"numeric",month:"long"}).format(now);
+}
+const weatherCodes={0:"Clear",1:"Mostly clear",2:"Partly cloudy",3:"Overcast",45:"Foggy",48:"Foggy",51:"Light drizzle",53:"Drizzle",55:"Heavy drizzle",61:"Light rain",63:"Rain",65:"Heavy rain",71:"Light snow",73:"Snow",75:"Heavy snow",80:"Rain showers",81:"Rain showers",82:"Heavy showers",95:"Thunderstorm",96:"Thunderstorm",99:"Thunderstorm"};
+async function loadWeather(){
+  try{
+    const response=await fetch("https://api.open-meteo.com/v1/forecast?latitude=28.6139&longitude=77.2090&current=temperature_2m,weather_code&timezone=Asia%2FKolkata");
+    if(!response.ok) throw new Error(String(response.status));
+    const data=await response.json();
+    const current=data.current;
+    weatherTemperatureEl.textContent=Math.round(current.temperature_2m)+"°C";
+    weatherConditionEl.textContent=weatherCodes[current.weather_code]||"Unknown";
+    weatherLocationEl.textContent="Delhi";
+  }catch{
+    weatherTemperatureEl.textContent="--°C";
+    weatherConditionEl.textContent="weather unavailable";
+  }
+}
+updateLocalClock();
+loadWeather();
+setInterval(updateLocalClock,1000);
+setInterval(loadWeather,15*60*1000);
