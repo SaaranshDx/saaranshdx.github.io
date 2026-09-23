@@ -404,7 +404,28 @@ h1 {
 }
 
 .stats-column {
+  display: flex;
+  flex-direction: column;
   padding-top: 0;
+}
+
+.gallery-column {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 180px;
+  margin-top: 28px;
+  padding: 16px 0 0;
+  border-top: 1px solid rgba(255,255,255,.1);
+}
+
+.gallery-column .construction {
+  margin: 0;
+  padding-top: 6px;
+  color: rgba(255,255,255,.58);
+  font-size: 16px;
+  line-height: 1.5;
 }
 
 .section-label {
