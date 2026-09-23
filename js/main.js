@@ -585,6 +585,7 @@ const LISTENING_KEYWORDS = [
 ];
 
 const activityPanel = document.getElementById("panel-activity");
+const rpcSection = document.getElementById("rpc-section");
 const githubPanel = document.getElementById("panel-github");
 
 const statusAssets = {
@@ -720,6 +721,7 @@ function renderGroup(title, cards, emptyText) {
 
 async function loadActivity(showLoading = true) {
   if (showLoading) {
+    rpcSection.hidden = true;
     activityPanel.innerHTML = `<div class="activity-empty">loading…</div>`;
   }
   try {
@@ -727,7 +729,13 @@ async function loadActivity(showLoading = true) {
     if (!response.ok) throw new Error(String(response.status));
     const data = await response.json();
     updateStatus(data);
-    const acts = data.activities || [];
+    const acts = (data.activities || []).filter((activity) => activity.application?.id != null);
+    if (!acts.length) {
+      rpcSection.hidden = true;
+      activityPanel.innerHTML = "";
+      return;
+    }
+    rpcSection.hidden = false;
     const listening = acts.filter(isListening);
     const playing = acts.filter((activity) => !isListening(activity));
 
@@ -744,12 +752,8 @@ async function loadActivity(showLoading = true) {
       );
   } catch {
     updateStatus({ status: "offline" });
-    activityPanel.innerHTML = `
-      <div class="api-down">
-        <i class="fa-solid fa-plug-circle-exclamation" aria-hidden="true"></i>
-        api is down
-      </div>
-    `;
+    rpcSection.hidden = true;
+    activityPanel.innerHTML = "";
   }
 }
 
