@@ -628,7 +628,7 @@ h1 {
   border-radius: 999px;
   padding: 8px 11px;
   color: rgba(255,255,255,.55);
-  background: rgba(0,0,0,.16);
+  background: rgba(0,0,0,0);
   backdrop-filter: blur(10px);
   cursor: pointer;
   font-size: 10px;
@@ -1257,7 +1257,7 @@ h1 {
 
 .weather-time-column{margin-top:28px;padding-top:16px;border-top:1px solid rgba(255,255,255,.1)}
 .weather-time-grid{display:grid;grid-template-columns:minmax(280px,.95fr) minmax(0,1.35fr);gap:12px}
-.time-widget,.weather-widget{min-width:0;min-height:190px;padding:18px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:rgba(0,0,0,.16);backdrop-filter:blur(12px);box-sizing:border-box}
+.time-widget,.weather-widget{min-width:0;min-height:190px;padding:18px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:rgba(0,0,0,0);backdrop-filter:blur(12px);box-sizing:border-box}
 .time-widget{display:flex;flex-direction:column;justify-content:center;overflow:hidden}
 .widget-kicker{margin-bottom:14px;color:rgba(255,255,255,.35);font:9px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.12em;text-transform:uppercase}
 .clock-content{display:flex;align-items:center;gap:18px;width:100%;min-width:0}
