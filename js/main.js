@@ -838,6 +838,7 @@ setInterval(updateActivityTimelines, 1000);
 
 const localTimeEl = document.getElementById("local-time");
 const localDateEl = document.getElementById("local-date");
+const clockOffsetEl = document.getElementById("clock-offset");
 const clockHourEl = document.getElementById("clock-hour");
 const clockMinuteEl = document.getElementById("clock-minute");
 const clockSecondEl = document.getElementById("clock-second");
@@ -884,6 +885,27 @@ function updateLocalClock() {
   clockHourEl.style.transform = "translateX(-50%) rotate(" + ((h * 30) + (minute * .5)) + "deg)";
   clockMinuteEl.style.transform = "translateX(-50%) rotate(" + ((minute * 6) + (second * .1)) + "deg)";
   clockSecondEl.style.transform = "translateX(-50%) rotate(" + (second * 6) + "deg)";
+
+  const localSecondOfDay = (now.getHours() * 3600) + (now.getMinutes() * 60) + now.getSeconds();
+  const delhiSecondOfDay = (hour * 3600) + (minute * 60) + second;
+  let shift = (delhiSecondOfDay - localSecondOfDay) % 86400;
+  if (shift < 0) shift += 86400;
+  if (shift > 43200) shift -= 86400;
+
+  const shiftMinutes = Math.round(shift / 60);
+  if (shiftMinutes === 0) {
+    clockOffsetEl.textContent = "same time zone as the owner";
+  } else {
+    const magnitude = formatTimeGap(Math.abs(shiftMinutes));
+    const direction = shiftMinutes > 0 ? "ahead of" : "behind";
+    clockOffsetEl.textContent = `you're ${magnitude} ${direction} delhi`;
+  }
+}
+
+function formatTimeGap(minutes) {
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  return minutes >= 60 ? (mins ? `${hours}h ${mins}m` : `${hours}h`) : `${mins}m`;
 }
 
 const weatherMeta = {
