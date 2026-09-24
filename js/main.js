@@ -888,7 +888,7 @@ function updateLocalClock() {
 
   const localSecondOfDay = (now.getHours() * 3600) + (now.getMinutes() * 60) + now.getSeconds();
   const delhiSecondOfDay = (hour * 3600) + (minute * 60) + second;
-  let shift = (delhiSecondOfDay - localSecondOfDay) % 86400;
+  let shift = (localSecondOfDay - delhiSecondOfDay) % 86400;
   if (shift < 0) shift += 86400;
   if (shift > 43200) shift -= 86400;
 
