@@ -720,6 +720,19 @@ function renderGroup(title, cards, emptyText) {
   `;
 }
 
+const EMPTY_ACTIVITY_STATES = [
+  "no life signs detected (but still online)",
+  "online but the brain is offline",
+  "nothing happening, as usual",
+  "calling it a break (maybe)"
+];
+
+function renderEmptyActivity() {
+  const message =
+    EMPTY_ACTIVITY_STATES[Math.floor(Math.random() * EMPTY_ACTIVITY_STATES.length)];
+  return `<div class="activity-empty">${escapeHtml(message)}</div>`;
+}
+
 async function loadActivity(showLoading = true) {
   if (showLoading) {
     rpcSection.hidden = true;
@@ -732,8 +745,11 @@ async function loadActivity(showLoading = true) {
     updateStatus(data);
     const acts = (data.activities || []).filter((activity) => activity.application?.id != null);
     if (!acts.length) {
-      rpcSection.hidden = true;
-      activityPanel.innerHTML = "";
+      rpcSection.hidden = false;
+      activityPanel.innerHTML =
+        data.status === "offline"
+          ? `<div class="activity-empty">my life support got cut (my internet broke)</div>`
+          : renderEmptyActivity();
       return;
     }
     rpcSection.hidden = false;
@@ -753,8 +769,8 @@ async function loadActivity(showLoading = true) {
       );
   } catch {
     updateStatus({ status: "offline" });
-    rpcSection.hidden = true;
-    activityPanel.innerHTML = "";
+    rpcSection.hidden = false;
+    activityPanel.innerHTML = `<div class="activity-empty">my life support got cut (my internet broke)</div>`;
   }
 }
 
