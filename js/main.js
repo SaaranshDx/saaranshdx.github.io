@@ -578,6 +578,7 @@ soundToggle.addEventListener("click", async () => {
 });
 
 const beanUrl = "https://bean.apps.bot-hosting.cloud/data/1189872646163284041";
+const ACTIVITY_REFRESH_INTERVAL_MS = 3_000;
 const githubUser = "SaaranshDx";
 
 const LISTENING_KEYWORDS = [
@@ -774,6 +775,11 @@ async function loadActivity(showLoading = true) {
   }
 }
 
+async function pollActivity(showLoading = false) {
+  await loadActivity(showLoading);
+  setTimeout(() => pollActivity(), ACTIVITY_REFRESH_INTERVAL_MS);
+}
+
 function updateActivityTimelines() {
   document.querySelectorAll(".activity-timeline").forEach((timeline) => {
     const start = Number(timeline.dataset.start);
@@ -831,8 +837,7 @@ function closeLinksModal() {
 }
 
 loadGithub();
-loadActivity();
-setInterval(() => loadActivity(false), 1000);
+pollActivity(true);
 setInterval(updateActivityTimelines, 1000);
 
 
