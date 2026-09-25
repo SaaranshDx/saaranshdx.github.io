@@ -577,7 +577,7 @@ soundToggle.addEventListener("click", async () => {
   soundToggle.setAttribute("aria-label", ambientMuted ? "Enable background sound" : "Disable background sound");
 });
 
-const beanUrl = "https://bean.apps.bot-hosting.cloud/api/data/1189872646163284041";
+const beanUrl = "https://bean.ghostdrop.qzz.io/api/data/1189872646163284041";
 const ACTIVITY_REFRESH_INTERVAL_MS = 3_000;
 const githubUser = "SaaranshDx";
 
