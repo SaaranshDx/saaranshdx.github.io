@@ -145,7 +145,7 @@ const projects = [
     description: "Share text like never before",
     language: "Python",
     languageColor: "#3572A5",
-    isCompleted: true,
+    isCompleted: false,
     github: "https://github.com/SaaranshDx/clipbin",
     live: "https://clipbin.github.io"
   },
