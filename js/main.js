@@ -195,6 +195,15 @@ const projects = [
     live: "https://modrinth.com/mod/hex-capes"
   },
   {
+    name: "hex server (archived)",
+    description: "Backend service used by hex",
+    language: "Javascript",
+    languageColor: "#f1e05a",
+    isCompleted: true,
+    github: "https://github.com/SaaranshDx/hex-server",
+    live: "https://hexcapes.qzz.io"
+  },
+  {
     name: "discord bridge",
     description: "A bridge to connect minecraft chat with discord using web hooks",
     language: "Java",
@@ -210,6 +219,15 @@ const projects = [
     languageColor: "#f1e05a",
     isCompleted: true,
     github: "https://github.com/SaaranshDx/peek",
+    live: ""
+  },
+  {
+    name: "whip",
+    description: "a concerningly opinionated new tab ui (alpha)",
+    language: "Javascript",
+    languageColor: "#f1e05a",
+    isCompleted: false,
+    github: "https://github.com/SaaranshDx/whip",
     live: ""
   }  
 ];
