@@ -740,6 +740,9 @@ const OFFLINE_ACTIVITY_STATES = [
   "the wifi has left the building",
   "someone unplugged the router again",
   "the internet has chosen violence",
+  "mom decided unplugged the powercable",
+  "someone fucking nuked me probably",
+  "i have ragequit after getting my ass whooped 12 rounds in a match",
   "my router is having a moment"
 ];
 
