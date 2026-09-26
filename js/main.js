@@ -590,6 +590,8 @@ const activityPanel = document.getElementById("panel-activity");
 const rpcSection = document.getElementById("rpc-section");
 const githubPanel = document.getElementById("panel-github");
 
+let lastActivityData = null;
+
 const statusAssets = {
   online: "./assets/online.webp",
   idle: "./assets/idle.webp",
@@ -736,6 +738,13 @@ const OFFLINE_ACTIVITY_STATES = [
   "i have escapes containment"
 ];
 
+const API_DOWN_ACTIVITY_STATES = [
+  "api is down (the beans stopped brewing)",
+  "api is down (someone unplugged the bean)",
+  "api is down (beans are still cooking)",
+  "api is down (i am asking the bean nicely)"
+];
+
 function renderEmptyActivity() {
   const message =
     EMPTY_ACTIVITY_STATES[Math.floor(Math.random() * EMPTY_ACTIVITY_STATES.length)];
@@ -748,15 +757,33 @@ function renderOfflineActivity() {
   return `<div class="activity-empty">${escapeHtml(message)}</div>`;
 }
 
+function renderApiDownActivity() {
+  const message =
+    API_DOWN_ACTIVITY_STATES[Math.floor(Math.random() * API_DOWN_ACTIVITY_STATES.length)];
+  return `<div class="activity-empty">${escapeHtml(message)}</div>`;
+}
+
+async function fetchActivityData() {
+  let response = await fetch(beanUrl);
+  if (response.status === 304) {
+    if (lastActivityData) return lastActivityData;
+    response = await fetch(beanUrl, { cache: "no-store" });
+    if (!response.ok) throw new Error(String(response.status));
+    return response.json();
+  }
+  if (!response.ok) throw new Error(String(response.status));
+  return response.json();
+}
+
 async function loadActivity(showLoading = true) {
   if (showLoading) {
     rpcSection.hidden = true;
     activityPanel.innerHTML = `<div class="activity-empty">loading…</div>`;
   }
   try {
-    const response = await fetch(beanUrl);
-    if (!response.ok) throw new Error(String(response.status));
-    const data = await response.json();
+    const data = await fetchActivityData();
+    if (!data) throw new Error("no activity data");
+    lastActivityData = data;
     updateStatus(data);
     const acts = (data.activities || []).filter((activity) => activity.application?.id != null);
     if (!acts.length) {
@@ -783,7 +810,7 @@ async function loadActivity(showLoading = true) {
   } catch {
     updateStatus({ status: "offline" });
     rpcSection.hidden = false;
-    activityPanel.innerHTML = renderOfflineActivity();
+    activityPanel.innerHTML = renderApiDownActivity();
   }
 }
 
