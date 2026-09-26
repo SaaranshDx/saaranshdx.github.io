@@ -728,9 +728,23 @@ const EMPTY_ACTIVITY_STATES = [
   "calling it a break (maybe)"
 ];
 
+const OFFLINE_ACTIVITY_STATES = [
+  "my life support got cut (my internet broke)",
+  "probably touching grass",
+  "laying unconcious for a few hours",
+  "maybe the electricity went out (with my will to live)",
+  "i have escapes containment"
+];
+
 function renderEmptyActivity() {
   const message =
     EMPTY_ACTIVITY_STATES[Math.floor(Math.random() * EMPTY_ACTIVITY_STATES.length)];
+  return `<div class="activity-empty">${escapeHtml(message)}</div>`;
+}
+
+function renderOfflineActivity() {
+  const message =
+    OFFLINE_ACTIVITY_STATES[Math.floor(Math.random() * OFFLINE_ACTIVITY_STATES.length)];
   return `<div class="activity-empty">${escapeHtml(message)}</div>`;
 }
 
@@ -748,9 +762,7 @@ async function loadActivity(showLoading = true) {
     if (!acts.length) {
       rpcSection.hidden = false;
       activityPanel.innerHTML =
-        data.status === "offline"
-          ? `<div class="activity-empty">my life support got cut (my internet broke)</div>`
-          : renderEmptyActivity();
+        data.status === "offline" ? renderOfflineActivity() : renderEmptyActivity();
       return;
     }
     rpcSection.hidden = false;
@@ -771,7 +783,7 @@ async function loadActivity(showLoading = true) {
   } catch {
     updateStatus({ status: "offline" });
     rpcSection.hidden = false;
-    activityPanel.innerHTML = `<div class="activity-empty">my life support got cut (my internet broke)</div>`;
+    activityPanel.innerHTML = renderOfflineActivity();
   }
 }
 
