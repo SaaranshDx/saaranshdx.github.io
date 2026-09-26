@@ -582,11 +582,11 @@ const ACTIVITY_REFRESH_INTERVAL_MS = 3_000;
 const githubUser = "SaaranshDx";
 
 const APPLICATION_IMAGE_FALLBACKS = {
-  "geometry dash": "./assets/rpc/geometry-dash.png",
-  "minecraft": "./assets/rpc/minecraft.png",
-  "undertale": "./assets/rpc/undertale.png",
-  "deltarune": "./assets/rpc/deltarune.png",
-  "sky: children of the light": "./assets/rpc/sky-children-of-the-light.png"
+  "Geometry Dash": "./assets/rpc/geometry-dash.png",
+  "Minecraft": "./assets/rpc/minecraft.png",
+  "Undertale": "./assets/rpc/undertale.png",
+  "Deltarune": "./assets/rpc/deltarune.png",
+  "Sky: Children of the Light": "./assets/rpc/sky-children-of-the-light.png"
 };
 
 const LISTENING_KEYWORDS = [
@@ -696,10 +696,12 @@ function renderActivityCard(activity, showButton = false) {
   const details = activity.details || "";
   const state = activity.state || "";
   const time = activityTime(activity.timestamps);
-  const applicationName = String(activity.application?.name || "").trim().toLowerCase();
+  const applicationName = String(activity.application?.name || "").trim();
+  const fallbackKey = Object.keys(APPLICATION_IMAGE_FALLBACKS)
+    .find((key) => key.toLowerCase() === applicationName.toLowerCase());
   const largeImage =
     activityAssetUrl(activity, activity.assets?.large_image) ||
-    APPLICATION_IMAGE_FALLBACKS[applicationName] ||
+    APPLICATION_IMAGE_FALLBACKS[fallbackKey] ||
     "";
   const smallImage = activityAssetUrl(activity, activity.assets?.small_image);
   const buttons = showButton
