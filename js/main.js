@@ -735,7 +735,12 @@ const OFFLINE_ACTIVITY_STATES = [
   "probably touching grass",
   "laying unconcious for a few hours",
   "maybe the electricity went out (with my will to live)",
-  "i have escapes containment"
+  "i have escapes containment",
+  "my nan tripped over the ethernet cable",
+  "the wifi has left the building",
+  "someone unplugged the router again",
+  "the internet has chosen violence",
+  "my router is having a moment"
 ];
 
 const API_DOWN_ACTIVITY_STATES = [
