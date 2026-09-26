@@ -581,6 +581,14 @@ const beanUrl = "https://bean.ghostdrop.qzz.io/api/data/1189872646163284041";
 const ACTIVITY_REFRESH_INTERVAL_MS = 3_000;
 const githubUser = "SaaranshDx";
 
+const APPLICATION_IMAGE_FALLBACKS = {
+  "geometry dash": "./assets/rpc/geometry-dash.png",
+  "minecraft": "./assets/rpc/minecraft.png",
+  "undertale": "./assets/rpc/undertale.png",
+  "deltarune": "./assets/rpc/deltarune.png",
+  "sky: children of the light": "./assets/rpc/sky-children-of-the-light.png"
+};
+
 const LISTENING_KEYWORDS = [
   "spotify", "apple music", "youtube", "soundcloud", "loop",
   "deezer", "tidal", "pandora", "music", "listen"
@@ -688,7 +696,11 @@ function renderActivityCard(activity, showButton = false) {
   const details = activity.details || "";
   const state = activity.state || "";
   const time = activityTime(activity.timestamps);
-  const largeImage = activityAssetUrl(activity, activity.assets?.large_image);
+  const applicationName = String(activity.application?.name || "").trim().toLowerCase();
+  const largeImage =
+    activityAssetUrl(activity, activity.assets?.large_image) ||
+    APPLICATION_IMAGE_FALLBACKS[applicationName] ||
+    "";
   const smallImage = activityAssetUrl(activity, activity.assets?.small_image);
   const buttons = showButton
     ? `<a class="activity-button" href="https://loop.mizucode.qzz.io" target="_blank" rel="noopener noreferrer">Get loop</a>`
