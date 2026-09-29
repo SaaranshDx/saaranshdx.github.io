@@ -183,7 +183,7 @@ const projects = [
     languageColor: "#f1e05a",
     isCompleted: true,
     github: "https://github.com/SaaranshDx/bean",
-    live: ""
+    live: "https://bean.mizucode.qzz.io/"
   },
   {
     name: "hex (archived)",
