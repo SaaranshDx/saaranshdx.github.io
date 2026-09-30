@@ -759,30 +759,45 @@ const EMPTY_ACTIVITY_STATES = [
   "no life signs detected (but still online)",
   "online but the brain is offline",
   "nothing happening, as usual",
-  "calling it a break (maybe)"
+  "calling it a break (maybe)",
+  "the brain has entered idle mode",
+  "currently buffering...",
+  "physically present, mentally somewhere else",
+  "activity.exe has stopped responding"
 ];
 
 const OFFLINE_ACTIVITY_STATES = [
   "my life support got cut (my internet broke)",
   "probably touching grass",
-  "laying unconcious for a few hours",
+  "laying unconscious for a few hours",
   "maybe the electricity went out (with my will to live)",
-  "i have escapes containment",
+  "i have escaped containment",
   "my nan tripped over the ethernet cable",
   "the wifi has left the building",
   "someone unplugged the router again",
   "the internet has chosen violence",
-  "mom decided unplugged the powercable",
+  "mom decided to unplug the power cable",
   "someone fucking nuked me probably",
-  "i have ragequit after getting my ass whooped 12 rounds in a match",
-  "my router is having a moment"
+  "i ragequit after getting my ass whooped 12 rounds in a match",
+  "my router is having a moment",
+  "the router has entered cardiac arrest",
+  "currently experiencing a severe lack of internet",
+  "i have been disconnected from civilization",
+  "the ethernet cable has been assassinated",
+  "internet privileges revoked",
+  "the server room has become a crime scene"
 ];
 
 const API_DOWN_ACTIVITY_STATES = [
   "api is down (the beans stopped brewing)",
   "api is down (someone unplugged the bean)",
   "api is down (beans are still cooking)",
-  "api is down (i am asking the bean nicely)"
+  "api is down (i am asking the bean nicely)",
+  "api is down (the bean has fallen asleep)",
+  "api is down (the beans have unionized)",
+  "api is down (bean.exe has crashed)",
+  "api is down (the bean has left the premises)",
+  "api is down (beans are experiencing technical difficulties)"
 ];
 
 function renderEmptyActivity() {
