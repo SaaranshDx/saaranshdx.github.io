@@ -115,6 +115,11 @@ const links = {
     url: "https://facebook.com/Saaransh_Xd",
     icon: "fa-brands fa-facebook"
   },
+  reddit: {
+    name: "Reddit",
+    url: "https://www.reddit.com/user/Saaransh_Xd",
+    icon: "fa-brands fa-reddit"
+  }
 };
 
 const important = ["github", "discord", "instagram", "modrinth", "youtube", "email"];
