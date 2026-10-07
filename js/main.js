@@ -150,13 +150,13 @@ const projects = [
     live: "https://clipbin.github.io"
   },
   {
-    name: "Groovy",
+    name: "Groove",
     description: "An open api for line synced lyrics for youtube music track",
     language: "Javascript",
     languageColor: "#f1e05a",
     isCompleted: false,
-    github: "https://github.com/loop-mp3/groovy",
-    live: "https://groovy.mizucode.qzz.io"
+    github: "https://github.com/loop-mp3/groove",
+    live: "https://groove.mizucode.qzz.io"
   },  
   {
     name: "ghostdrop (archived)",
