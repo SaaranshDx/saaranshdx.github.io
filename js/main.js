@@ -115,11 +115,6 @@ const links = {
     url: "https://facebook.com/Saaransh_Xd",
     icon: "fa-brands fa-facebook"
   },
-  reddit: {
-    name: "Reddit",
-    url: "https://www.reddit.com/user/Saaransh_Xd",
-    icon: "fa-brands fa-reddit"
-  }
 };
 
 const important = ["github", "discord", "instagram", "modrinth", "youtube", "email"];
@@ -155,6 +150,15 @@ const projects = [
     live: "https://clipbin.github.io"
   },
   {
+    name: "Groovy",
+    description: "An open api for line synced lyrics for youtube music track",
+    language: "Javascript",
+    languageColor: "#f1e05a",
+    isCompleted: false,
+    github: "https://github.com/loop-mp3/groovy",
+    live: "https://groovy.mizucode.qzz.io"
+  },  
+  {
     name: "ghostdrop (archived)",
     description: "File sharing that actually works",
     language: "Javascript",
@@ -188,7 +192,7 @@ const projects = [
     languageColor: "#f1e05a",
     isCompleted: true,
     github: "https://github.com/SaaranshDx/bean",
-    live: "https://bean.mizucode.qzz.io/"
+    live: ""
   },
   {
     name: "hex (archived)",
@@ -200,15 +204,6 @@ const projects = [
     live: "https://modrinth.com/mod/hex-capes"
   },
   {
-    name: "discord bridge",
-    description: "A bridge to connect minecraft chat with discord using web hooks",
-    language: "Java",
-    languageColor: "#B07219",
-    isCompleted: true,
-    github: "https://github.com/SaaranshDx/discord-bridge",
-    live: "https://modrinth.com/plugin/discord-bridge-mc"
-  }, 
-  {
     name: "hex server (archived)",
     description: "Backend service used by hex",
     language: "Javascript",
@@ -216,6 +211,15 @@ const projects = [
     isCompleted: true,
     github: "https://github.com/SaaranshDx/hex-server",
     live: "https://hexcapes.qzz.io"
+  },
+  {
+    name: "discord bridge",
+    description: "A bridge to connect minecraft chat with discord using web hooks",
+    language: "Java",
+    languageColor: "#B07219",
+    isCompleted: true,
+    github: "https://github.com/SaaranshDx/discord-bridge",
+    live: "https://modrinth.com/plugin/discord-bridge-mc"
   },  
   {
     name: "peek",
@@ -764,45 +768,30 @@ const EMPTY_ACTIVITY_STATES = [
   "no life signs detected (but still online)",
   "online but the brain is offline",
   "nothing happening, as usual",
-  "calling it a break (maybe)",
-  "the brain has entered idle mode",
-  "currently buffering...",
-  "physically present, mentally somewhere else",
-  "activity.exe has stopped responding"
+  "calling it a break (maybe)"
 ];
 
 const OFFLINE_ACTIVITY_STATES = [
   "my life support got cut (my internet broke)",
   "probably touching grass",
-  "laying unconscious for a few hours",
+  "laying unconcious for a few hours",
   "maybe the electricity went out (with my will to live)",
-  "i have escaped containment",
+  "i have escapes containment",
   "my nan tripped over the ethernet cable",
   "the wifi has left the building",
   "someone unplugged the router again",
   "the internet has chosen violence",
-  "mom decided to unplug the power cable",
+  "mom decided unplugged the powercable",
   "someone fucking nuked me probably",
-  "i ragequit after getting my ass whooped 12 rounds in a match",
-  "my router is having a moment",
-  "the router has entered cardiac arrest",
-  "currently experiencing a severe lack of internet",
-  "i have been disconnected from civilization",
-  "the ethernet cable has been assassinated",
-  "internet privileges revoked",
-  "the server room has become a crime scene"
+  "i have ragequit after getting my ass whooped 12 rounds in a match",
+  "my router is having a moment"
 ];
 
 const API_DOWN_ACTIVITY_STATES = [
   "api is down (the beans stopped brewing)",
   "api is down (someone unplugged the bean)",
   "api is down (beans are still cooking)",
-  "api is down (i am asking the bean nicely)",
-  "api is down (the bean has fallen asleep)",
-  "api is down (the beans have unionized)",
-  "api is down (bean.exe has crashed)",
-  "api is down (the bean has left the premises)",
-  "api is down (beans are experiencing technical difficulties)"
+  "api is down (i am asking the bean nicely)"
 ];
 
 function renderEmptyActivity() {
